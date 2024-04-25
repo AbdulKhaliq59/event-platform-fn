@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 interface Event {
     _id: string;
     title: string;
@@ -24,7 +24,13 @@ const Events: React.FC = () => {
     });
 
     const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
-    const [deleteChurchId, setDeleteChurchId] = useState<string>('');
+    const [deleteeventId, setDeleteeventId] = useState<string>('');
+    const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
+    const [updateEvent, setUpdateEvent] = useState<Event | null>(null);
+
+    const [isViewOpen, setIsViewOpen] = useState<boolean>(false);
+    const [viewEvent, setViewEvent] = useState<Event | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false); // Add isLoading state
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -49,15 +55,24 @@ const Events: React.FC = () => {
     };
 
 
-    const handleDeleteModal = (churchId: string) => {
+    const handleDeleteModal = (eventId: string) => {
 
 
-        setDeleteChurchId(churchId)
+        setDeleteeventId(eventId)
         setIsDeleteOpen(true)
     }
     const closeDeleteModal = () => {
         setIsDeleteOpen(false);
     }
+    const handleUpdateModal = (event: Event) => {
+        setUpdateEvent(event);
+        setIsUpdateOpen(true);
+    };
+
+    const closeUpdateModal = () => {
+        setIsUpdateOpen(false);
+    };
+
     const handleDelete = async (eventId: string) => {
         try {
             const response = await fetch(`${BACKEND_URL}/event/${eventId}`, {
@@ -75,6 +90,58 @@ const Events: React.FC = () => {
             toast.success("Event deleted successfully");
         } catch (error: any) {
             toast.error(error.message || "Error deleting event");
+        }
+    };
+
+    const handleUpdate = async () => {
+        console.log("We are going to update");
+
+        try {
+            if (!updateEvent) {
+                toast.error("No Event to update");
+                throw new Error("No event to update");
+            }
+
+            // Check if all required fields are filled
+            if (!updateEvent.title || !updateEvent.date || !updateEvent.location || !updateEvent.ticketSlots) {
+                toast.error("Please fill in the required filled")
+            }
+
+            // Create a data object to hold the update fields
+            const updateData: Event = {
+                title: updateEvent.title,
+                date: updateEvent.date,
+                location: updateEvent.location,
+                ticketSlots: updateEvent.ticketSlots,
+                _id: updateEvent._id,
+                pictureUrl: updateEvent.pictureUrl
+            };
+
+            // If pictureUrl exists, add it to the updateData
+            if (updateEvent.pictureUrl) {
+                updateData.pictureUrl = updateEvent.pictureUrl;
+            }
+
+            // Send the update data to the backend
+            const response = await axios.patch(`${BACKEND_URL}/event/${updateEvent._id}`, updateData);
+
+            if (response.status !== 200) {
+                throw new Error("Failed to update event");
+            }
+
+            // Fetch the updated list of events
+            const updatedEventsResponse: any = await axios.get<Event[]>(`${BACKEND_URL}/events`);
+            setEvents(updatedEventsResponse.data.events);
+
+            // Show success toast message
+            toast.success("Event updated successfully");
+
+            // Close the modal after showing the toast message
+            setTimeout(() => {
+                setIsUpdateOpen(false);
+            }, 2000); // Adjust the timeout as needed
+        } catch (error: any) {
+            toast.error(error.message || "Error updating event");
         }
     };
 
@@ -109,9 +176,26 @@ const Events: React.FC = () => {
     };
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        // Validate date
+        const selectedDate = new Date(formData.date);
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Set current date to the start of the day
+        if (selectedDate < currentDate) {
+            toast.error("Date must be today or upcoming from today's date");
+            return;
+        }
+
+        // Validate image file type
+        const pictureInput = e.target as HTMLInputElement;
+        const pictureFile = pictureInput.files && pictureInput.files[0];
+        if (pictureFile && !['image/png', 'image/jpeg'].includes(pictureFile.type)) {
+            toast.error('Please select a PNG or JPEG image file');
+            return;
+        }
+
         try {
             await axios.post(`${BACKEND_URL}/event`, formData);
-
             setIsOpen(false);
             const response: any = await axios.get<Event[]>(`${BACKEND_URL}/events`);
             setEvents(response.data.events);
@@ -120,6 +204,36 @@ const Events: React.FC = () => {
             toast.error(error.response.data.error);
         }
     };
+
+
+    const handlePictureUrlChange = (e: any) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            if (reader.readyState === 2) {
+                setUpdateEvent((prevState): any => ({
+                    ...prevState,
+                    pictureUrl: reader.result,
+                }));
+            }
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleViewModal = (event: Event) => {
+
+        setViewEvent(event);
+        setIsViewOpen(true);
+    };
+
+    const closeViewModal = () => {
+        setIsViewOpen(false);
+    };
+
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         const options: Intl.DateTimeFormatOptions = {
@@ -129,6 +243,7 @@ const Events: React.FC = () => {
         };
         return date.toLocaleDateString('en-US', options);
     };
+    console.log("EVENTS", events);
 
     return (
         <section className="container mt-20 px-4 mx-auto">
@@ -225,6 +340,143 @@ const Events: React.FC = () => {
                         </div>
                     </div>
                 )}
+                {isUpdateOpen && updateEvent && (
+                    <div className="fixed inset-0 z-10 overflow-y-auto">
+                        {/* Update Event Modal */}
+                        <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+                                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                            </div>
+                            <div className="relative inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                                <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize" id="modal-title">
+                                    Update Event
+                                </h3>
+                                <form>
+                                    {/* Populate form fields with updateEvent data */}
+                                    <label htmlFor="title" className="block mt-4 text-sm font-medium text-gray-700">
+                                        Title
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="title"
+                                        name="title"
+                                        value={updateEvent.title}
+                                        onChange={(e) => setUpdateEvent({ ...updateEvent, title: e.target.value })}
+                                        className="block w-full mt-1 px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                                        required // Add required attribute for validation
+                                    />
+                                    <label htmlFor="date" className="block mt-4 text-sm font-medium text-gray-700">
+                                        Date
+                                    </label>
+                                    <input
+                                        type="date"
+                                        id="date"
+                                        name="date"
+                                        value={updateEvent.date}
+                                        onChange={(e) => setUpdateEvent({ ...updateEvent, date: e.target.value })}
+                                        className="block w-full mt-1 px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                                        required
+                                    />
+                                    <label htmlFor="location" className="block mt-4 text-sm font-medium text-gray-700">
+                                        Location
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="location"
+                                        name="location"
+                                        value={updateEvent.location}
+                                        onChange={(e) => setUpdateEvent({ ...updateEvent, location: e.target.value })}
+                                        className="block w-full mt-1 px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                                        required
+                                    />
+                                    <label htmlFor="ticketSlots" className="block mt-4 text-sm font-medium text-gray-700">
+                                        Ticket Slots
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="ticketSlots"
+                                        name="ticketSlots"
+                                        value={updateEvent.ticketSlots}
+                                        onChange={(e) => setUpdateEvent({ ...updateEvent, ticketSlots: Number(e.target.value) })}
+                                        className="block w-full mt-1 px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                                        required
+                                    />
+                                    <label htmlFor="pictureUrl" className="block mt-4 text-sm font-medium text-gray-700">
+                                        Picture
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="pictureUrl"
+                                        name="pictureUrl"
+                                        onChange={handlePictureUrlChange} // Handle file input change
+                                        className="block w-full mt-1 px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                                        required
+                                    />
+
+                                    <div className="mt-4 sm:flex sm:items-center sm:justify-end">
+                                        <button
+                                            type="button"
+                                            onClick={closeUpdateModal}
+                                            className="w-full sm:w-auto px-4 py-2 mt-3 sm:mt-0 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:mx-2 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            onClick={handleUpdate}
+                                            className="w-full sm:w-auto px-4 py-2 mt-3 sm:mt-0 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#47126b] rounded-md sm:mx-2 hover:bg-[#5b108e] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                                        >
+                                            Update Event
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isViewOpen && viewEvent && (
+                    <div className="fixed inset-0 z-10 overflow-y-auto">
+                        {/* View Event Modal */}
+                        <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+                                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                            </div>
+                            <div className="relative inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                                <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize" id="modal-title">
+                                    Event Details
+                                </h3>
+                                <div className="mt-4">
+                                    {/* Display event details */}
+                                    <p><span className='font-bold'>Title:</span> {viewEvent.title}</p>
+                                    <p><span className='font-bold'>Date:</span> {formatDate(viewEvent.date)}</p>
+                                    <p><span className='font-bold'>Location:</span> {viewEvent.location}</p>
+                                    <p><span className='font-bold'>Ticket Slots:</span> {viewEvent.ticketSlots}</p>
+                                    {isLoading ? (
+                                        <div className="spinner"></div>
+                                    ) : (
+                                        <img
+                                            src={viewEvent.pictureUrl}
+                                            alt="Event"
+                                            className="mt-4 max-w-full h-auto"
+                                            onLoad={() => setIsLoading(false)} // Set isLoading to false when image is loaded
+                                        />
+                                    )}
+
+                                </div>
+                                <div className="mt-4">
+                                    <button
+                                        type="button"
+                                        onClick={closeViewModal}
+                                        className="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 <div className="-mx-4 mt-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -273,9 +525,10 @@ const Events: React.FC = () => {
                                                 {event.ticketSlots}
                                             </td>
                                             <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                                                <button className="text-[#235552] hover:underline">Edit</button>
+                                                <button className="text-[#235552] hover:underline" onClick={() => handleUpdateModal(event)}>Edit</button>
                                                 <button className="text-red-600 ml-4 hover:underline" onClick={() => handleDeleteModal(event._id)}>Delete</button>
-                                                <button className="text-blue-600 ml-4 hover:underline" >View More</button>
+                                                <button className="text-blue-600 ml-4 hover:underline" onClick={() => handleViewModal(event)}>View More</button>
+
                                             </td>
                                         </tr>
                                     ))}
@@ -288,7 +541,7 @@ const Events: React.FC = () => {
                                                 </div>
                                                 <div className="relative inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                                                     <h3 className="text-lg font-bold leading-6 text-center text-gray-800 capitalize " id="modal-title">
-                                                        Delete church
+                                                        Delete Event
                                                     </h3>
                                                     <div className="mt-4 flex justify-center">
                                                         <p> Do you want to delete it?</p>
@@ -297,7 +550,7 @@ const Events: React.FC = () => {
                                                         <button type="button" onClick={closeDeleteModal} className="w-full sm:w-auto px-4 py-2 mt-3 sm:mt-0 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:mx-2 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
                                                             Cancel
                                                         </button>
-                                                        <button type="submit" onClick={() => handleDelete(deleteChurchId)} className="w-full sm:w-auto px-4 py-2 mt-3 sm:mt-0 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#FF2026] rounded-md sm:mx-2 hover:bg-[#ff5a60] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
+                                                        <button type="submit" onClick={() => handleDelete(deleteeventId)} className="w-full sm:w-auto px-4 py-2 mt-3 sm:mt-0 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#FF2026] rounded-md sm:mx-2 hover:bg-[#ff5a60] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
                                                             delete
                                                         </button>
                                                     </div>

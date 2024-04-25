@@ -10,6 +10,7 @@ import Events from './Pages/Events.tsx'
 import Dashboard from './Pages/Dashboard.tsx'
 import { isAuthenticated } from './utils/ProtectedRoute.tsx'
 import EventsTable from './Pages/dashboard/Events.tsx'
+import TicketPage from './Pages/TicketPage.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -19,6 +20,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path='/signin' element={<SigninPage />} />
         <Route path='/signup' element={<SignupPage />} />
         <Route path='/events' element={<Events />} />
+        <Route path='/tickets' element={<TicketPage />} />
         <Route
           path="/dashboard"
           element={

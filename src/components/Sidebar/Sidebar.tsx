@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
-import { MdOutlineDashboard, MdOutlineChurch } from "react-icons/md";
+import { MdOutlineDashboard, MdEvent } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosLogOut } from "react-icons/io";
@@ -32,10 +32,10 @@ const Sidebar: React.FC = () => {
     // }, [])
     const menus: Menu[] = [
         { name: "dashboard", link: "/dashboard", icon: MdOutlineDashboard },
-        // { name: "event", link: "/dashboard/church", icon: MdOutlineChurch },
-        { name: "events", link: "/dashboard/events", icon: MdOutlineChurch },
+        // { name: "event", link: "/dashboard/church", icon: MdEvent },
+        { name: "events", link: "/dashboard/events", icon: MdEvent },
         // { name: "Roles", link: "/dashboard/roles", icon: MdOutlineAssignmentInd },
-        // ...(isManager ? [{ name: "church", link: "/dashboard/church", icon: MdOutlineChurch }] : [{ name: "churches", link: "/dashboard/churches", icon: MdOutlineChurch }]),
+        // ...(isManager ? [{ name: "church", link: "/dashboard/church", icon: MdEvent }] : [{ name: "churches", link: "/dashboard/churches", icon: MdEvent }]),
         // ...(isAdmin ? [{ name: "Roles", link: "/dashboard/roles", icon: MdOutlineAssignmentInd }] : []),
         // { name: "Saved", link: "/", icon: AiOutlineHeart, margin: true },
         { name: "profile", link: "/", icon: CgProfile },

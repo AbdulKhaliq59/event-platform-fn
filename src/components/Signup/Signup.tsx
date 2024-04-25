@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import eventImage from '/images/event2.jpg';
 
 const Signup = () => {
     const BACKEND_URL = 'https://event-platform-pi.onrender.com'
@@ -41,6 +42,19 @@ const Signup = () => {
     return (
         <div className="bg-white">
             <div className="flex justify-center h-screen">
+                <div className="hidden bg-cover lg:block lg:w-2/3" style={{ backgroundImage: `url(${eventImage})` }}>
+                    <div className="flex items-center h-full px-20 bg-gray-900 bg-opacity-40">
+                        <div>
+                            <h2 className="text-2xl font-bold text-white sm:text-3xl">Event MP</h2>
+
+                            <p className="max-w-xl mt-3 text-gray-300">
+                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. In
+                                autem ipsa, nulla laboriosam dolores, repellendus perferendis libero suscipit nam temporibus
+                                molestiae
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 <form onSubmit={handleSubmit} className="flex items-center w-full max-w-md px-6 mx-auto lg:w-2/6">
                     <div className="flex-1">
                         <div className="text-center">
