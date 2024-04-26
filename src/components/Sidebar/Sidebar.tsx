@@ -45,7 +45,7 @@ const Sidebar: React.FC = () => {
                     {/* Logo */}
                     {open && (
                         <Link to="/">
-                            <h1 className="text-2xl font-bold ">Event <span className='text-blue-600'>MP</span></h1>
+                            <h1 className="text-2xl font-bold ">Event <span className='text-[#e192c3]'>MP</span></h1>
                         </Link>
                     )}
                     {/* Hamburger Icon */}
@@ -56,7 +56,7 @@ const Sidebar: React.FC = () => {
                     {menus?.map((menu, i) => (
                         <div
                             key={i}
-                            className={` ${menu?.margin && "mt-5"} group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-black rounded-md`}
+                            className={` ${menu?.margin && "mt-5"} group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-[black] rounded-md`}
                             onClick={() => handleClick(menu.link)}
                         >
                             <div><menu.icon size="20" /></div>
