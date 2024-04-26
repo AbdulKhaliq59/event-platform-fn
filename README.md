@@ -9,7 +9,7 @@ A web application for managing events organized by company, enabling users to br
 2. Navigate to the frontend directory: `cd event-platform-fn`
 3. Install dependencies: `npm install`
 4. Navigate to the backend directory `cd event-platform-pi`
-5. Install depencies: `npm install`
+5. Install dependencies: `npm install`
 6. Set up environment variable: Create `.env` file add variable referred to the `.env.example`
 7. Configure `MONGO DB` locally or remotely
 8. Configure `Cloudinary`
@@ -47,3 +47,11 @@ A web application for managing events organized by company, enabling users to br
 - react-router-dom
 - react-select
 - react-toastify
+
+
+#### CREDENTIALS
+
+##### Admin
+
+- email: `admin@example.com`
+- password: `password@12345`
