@@ -1,22 +1,25 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
 import { BsPersonCircle } from "react-icons/bs";
 const NavBar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+    const navigate = useNavigate();
     const token = localStorage.getItem('token');
 
     const toggleProfileMenu = () => {
         setProfileMenuOpen(!profileMenuOpen);
     };
-
+    const handleClick = () => {
+        localStorage.removeItem('token');
+        navigate('/');
+    }
     return (
         <nav className="bg-white shadow">
             <div className="container px-6 py-4 mx-auto">
                 <div className="lg:flex lg:items-center lg:justify-between">
                     <div className="flex items-center justify-between">
-                        <a href="#" className="mx-auto">
+                        <a href="/" className="mx-auto">
                             <h1 className="text-2xl font-bold">Event <span className='text-[#6d23b6]'>MP</span></h1>
                         </a>
                         {/* Mobile menu button */}
@@ -47,7 +50,7 @@ const NavBar = () => {
                                 {profileMenuOpen && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                                         <Link to="/tickets" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Ticket</Link>
-                                        <Link to="/logout" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</Link>
+                                        <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={handleClick}>Logout</button>
                                     </div>
                                 )}
                             </div>

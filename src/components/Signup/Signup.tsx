@@ -30,11 +30,8 @@ const Signup = () => {
                 email,
                 password,
             });
-            console.log('Signup successful:', response.data);
-            toast.success('Signup successful');
-            // Redirect user to login page or any other page
+            toast.success(response.data.message);
         } catch (error: any) {
-            console.error('Signup failed:', error.response.data);
             toast.error(error.response.data.error);
         }
     };

@@ -4,7 +4,6 @@ export const decodedToken = (token: string) => {
     try {
         return jwtDecode(token);
     } catch (error) {
-        console.error('Error decoding token:', error);
         return null;
     }
 };
@@ -12,7 +11,7 @@ export const decodedToken = (token: string) => {
 export const isAuthenticated = () => {
     const token = localStorage.getItem('token');
     if (!token) {
-        return false; // No token found
+        return false;
     }
 
     try {
@@ -26,7 +25,6 @@ export const isAuthenticated = () => {
 
         return true; // Valid token
     } catch (error) {
-        console.error('Error parsing token:', error);
         return false; // Token is invalid
     }
 };
@@ -38,9 +36,9 @@ export const isAdmin = () => {
     }
     try {
         const decodedToken = JSON.parse(atob(token.split('.')[1]));
-        return decodedToken.role === 'admin';
+        return decodedToken.email === 'admin@example.com';
     } catch (error) {
-        console.error("Error parsing token", error);
+
         return false;
 
     }
@@ -54,7 +52,6 @@ export const isManager = () => {
         const decoded: any = decodedToken(token);
         return decoded.role === 'manager';
     } catch (error) {
-        console.error("Error decoding token", error);
         return false;
     }
 }

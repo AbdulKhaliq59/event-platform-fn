@@ -8,9 +8,10 @@ import SigninPage from './Pages/SigninPage.tsx'
 import SignupPage from './Pages/SignupPage.tsx'
 import Events from './Pages/Events.tsx'
 import Dashboard from './Pages/Dashboard.tsx'
-import { isAuthenticated } from './utils/ProtectedRoute.tsx'
+import { isAdmin } from './utils/ProtectedRoute.tsx'
 import EventsTable from './Pages/dashboard/Events.tsx'
 import TicketPage from './Pages/TicketPage.tsx'
+import Booking from './Pages/dashboard/Booking.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -24,14 +25,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route
           path="/dashboard"
           element={
-            isAuthenticated() ? (
+            isAdmin() ? (
               <Dashboard />
             ) : (
               <Navigate to="/signin" />
             )
           }
         >
+
           <Route path="events" element={<EventsTable />} />
+          <Route path="booking" element={<Booking />} />
 
         </Route>
 

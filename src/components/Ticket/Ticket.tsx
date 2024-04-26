@@ -29,11 +29,11 @@ const Ticket = () => {
                     }
                 };
                 const response = await axios.get(`${BACKEND_URL}/user/tickets`, authHeader);
-                console.log("response", response.data);
+
 
                 setTickets(response.data.tickets);
-            } catch (error) {
-                console.error('Error fetching tickets:', error);
+            } catch (error: any) {
+                toast.error(error.response.data.error)
             }
         };
 
@@ -70,8 +70,6 @@ const Ticket = () => {
     const currentTickets = tickets.slice(indexOfFirstItem, indexOfLastItem);
 
     const handleCancelModal = (ticketId: string) => {
-        console.log("TickerID", ticketId);
-
         setCancelTicketID(ticketId)
         setIsCancelOpen(true)
     }
@@ -79,9 +77,7 @@ const Ticket = () => {
     const closeDeleteModal = () => {
         setIsCancelOpen(false);
     }
-
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-    console.log("Ticket", cancelTicketId);
     return (
         <section className="container mt-10 px-4 mx-auto">
             <div className="sm:flex sm:items-center sm:justify-between">

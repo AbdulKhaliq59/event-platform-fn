@@ -47,7 +47,7 @@ const AllEvents = () => {
                 setEvents(response.data.events);
                 setLoading(false)
             } catch (error) {
-                console.error('Error fetching events:', error);
+
                 toast.error("Internal Server error")
             }
         };
@@ -98,8 +98,7 @@ const AllEvents = () => {
             },
                 authHeader
             );
-            const data = response.data;
-            console.log(data);
+
 
             if (response.data.success === true) {
                 toast.success("Ticket Booked Successfully")
@@ -107,14 +106,13 @@ const AllEvents = () => {
             }
 
         } catch (error: any) {
-            console.log(error);
-
             toast.error("Internal Server error")
         }
     }
     const filteredEvents = events.filter(event =>
-        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.location.toLowerCase().includes(searchTerm.toLowerCase())
+        (event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            event.location.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        event.ticketSlots > 0
     );
 
     const formatDate = (dateString: string) => {

@@ -22,18 +22,28 @@ const Signin = () => {
         }
 
         try {
+            if (email === 'admin@example.com') {
+                const response = await axios.post(`${BACKEND_URL}/auth/signin`, {
+                    email,
+                    password,
+                });
+
+                toast.success('Login successful');
+                localStorage.setItem('token', response.data.token);
+                window.location.href = '/dashboard'; 
+                setIsLoggedIn(true);
+            }
             const response = await axios.post(`${BACKEND_URL}/auth/signin`, {
                 email,
                 password,
             });
-            console.log('Login successful:', response.data);
+
             toast.success('Login successful');
             localStorage.setItem('token', response.data.token);
-            window.location.href = '/dashboard'; // Redirect to dashboard
+            window.location.href = '/';
             setIsLoggedIn(true);
         } catch (error: any) {
-            console.error('Login failed:', error.response.data);
-            toast.error(error.response.data.error);
+            toast.error(error.response.data.Error);
         }
     };
 

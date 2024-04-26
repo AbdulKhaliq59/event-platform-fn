@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { MdOutlineDashboard, MdEvent } from "react-icons/md";
-import { CgProfile } from "react-icons/cg";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosLogOut } from "react-icons/io";
-// import { decodedToken } from "../../utils/ProtectedRoute";
+import { IoTicket } from "react-icons/io5";
+
 interface Menu {
     name: string;
     link: string;
@@ -15,30 +15,12 @@ interface Menu {
 
 const Sidebar: React.FC = () => {
     const [open, setOpen] = useState(true);
-    // const [isAdmin, setIsAdmin] = useState(false);
-    // const [isManager, setIsManager] = useState(false);
     const navigate = useNavigate();
-    // useEffect(() => {
-    //     const token = localStorage.getItem('token');
-    //     if (token) {
-    //         const decoded: any = decodedToken(token);
-    //         if (decoded && decoded.role === 'admin') {
-    //             setIsAdmin(true)
-    //         }
-    //         if (decoded && decoded.role === 'manager') {
-    //             setIsManager(true)
-    //         }
-    //     }
-    // }, [])
+
     const menus: Menu[] = [
         { name: "dashboard", link: "/dashboard", icon: MdOutlineDashboard },
-        // { name: "event", link: "/dashboard/church", icon: MdEvent },
         { name: "events", link: "/dashboard/events", icon: MdEvent },
-        // { name: "Roles", link: "/dashboard/roles", icon: MdOutlineAssignmentInd },
-        // ...(isManager ? [{ name: "church", link: "/dashboard/church", icon: MdEvent }] : [{ name: "churches", link: "/dashboard/churches", icon: MdEvent }]),
-        // ...(isAdmin ? [{ name: "Roles", link: "/dashboard/roles", icon: MdOutlineAssignmentInd }] : []),
-        // { name: "Saved", link: "/", icon: AiOutlineHeart, margin: true },
-        { name: "profile", link: "/", icon: CgProfile },
+        { name: "booking", link: "/dashboard/booking", icon: IoTicket },
         { name: "Logout", link: "/logout", icon: IoIosLogOut },
     ];
 
@@ -49,13 +31,13 @@ const Sidebar: React.FC = () => {
         }
         else {
             navigate(link);
-            setOpen(false); // Close the sidebar after navigation
+            setOpen(false);
         }
     };
 
     return (
         <section className="flex">
-            {/* Sidebar */}
+
             <div
                 className={`bg-[#47126b] min-h-screen ${open ? "w-72" : "w-16"} duration-500 text-gray-300 px-4`}
             >

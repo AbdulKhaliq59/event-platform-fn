@@ -12,7 +12,14 @@ interface Event {
 }
 
 const Events: React.FC = () => {
-    const BACKEND_URL = 'https://event-platform-pi.onrender.com'
+    const BACKEND_URL = 'https://event-platform-pi.onrender.com';
+    const token = localStorage.getItem('token')
+    const authHeader = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`
+        }
+    }
     const [events, setEvents] = useState<Event[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({
@@ -79,6 +86,7 @@ const Events: React.FC = () => {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `${token}`
                 },
             });
             if (!response.ok) {
@@ -94,8 +102,6 @@ const Events: React.FC = () => {
     };
 
     const handleUpdate = async () => {
-        console.log("We are going to update");
-
         try {
             if (!updateEvent) {
                 toast.error("No Event to update");
@@ -122,8 +128,7 @@ const Events: React.FC = () => {
                 updateData.pictureUrl = updateEvent.pictureUrl;
             }
 
-            // Send the update data to the backend
-            const response = await axios.patch(`${BACKEND_URL}/event/${updateEvent._id}`, updateData);
+            const response = await axios.patch(`${BACKEND_URL}/event/${updateEvent._id}`, updateData, authHeader);
 
             if (response.status !== 200) {
                 throw new Error("Failed to update event");
@@ -180,13 +185,12 @@ const Events: React.FC = () => {
         // Validate date
         const selectedDate = new Date(formData.date);
         const currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0); // Set current date to the start of the day
+        currentDate.setHours(0, 0, 0, 0); 
         if (selectedDate < currentDate) {
             toast.error("Date must be today or upcoming from today's date");
             return;
         }
 
-        // Validate image file type
         const pictureInput = e.target as HTMLInputElement;
         const pictureFile = pictureInput.files && pictureInput.files[0];
         if (pictureFile && !['image/png', 'image/jpeg'].includes(pictureFile.type)) {
@@ -195,7 +199,8 @@ const Events: React.FC = () => {
         }
 
         try {
-            await axios.post(`${BACKEND_URL}/event`, formData);
+            await axios.post(`${BACKEND_URL}/event`, formData,
+                authHeader);
             setIsOpen(false);
             const response: any = await axios.get<Event[]>(`${BACKEND_URL}/events`);
             setEvents(response.data.events);
@@ -243,7 +248,7 @@ const Events: React.FC = () => {
         };
         return date.toLocaleDateString('en-US', options);
     };
-    console.log("EVENTS", events);
+
 
     return (
         <section className="container mt-20 px-4 mx-auto">
