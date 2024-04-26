@@ -75,7 +75,6 @@ const UpcomingEvents = () => {
                                     <p className="font-semibold text-gray-800 md:text-xl">{event.title}</p>
                                     <p className="mt-3 text-sm text-gray-500 md:text-sm">{event.location}</p>
                                     <p className="mt-3 text-sm text-[#6411ad]">{formatDate(event.date)}</p>
-                                    <button className="mt-4 px-4 py-2 text-sm font-semibold text-white bg-[#47126b] rounded hover:bg-[#6411ad] focus:outline-none focus:bg-[#6411ad]">Book Ticket</button>
                                 </div>
                             </div>
                         ))}
