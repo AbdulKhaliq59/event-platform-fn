@@ -2,6 +2,25 @@
 
 A web application for managing events organized by company, enabling users to browse upcoming events, book tickets, and manage their bookings, while administrators have access to an admin dashboard for event management.
 
+### Documentation
+
+#### users
+
+- `/`: Home Page
+- `/events`: get All upcoming events
+- `/signin`: Login
+- `/signup`: Create new Account
+
+#### Authorized user
+
+- `/tickets`: Get all ticket he/she has booked
+
+#### Admin
+
+- `/dashboard`: reach to dashboard
+- `/dashboard/events`: reach to all events
+- `/dashboard/booking`: reach to all booking
+
 ### Getting Started
 
 1. Clone the frontend repository: `git clone` [event-platform-fn](https://github.com/AbdulKhaliq59/event-platform-fn)
