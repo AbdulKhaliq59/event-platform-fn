@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { isAuthenticated } from '../../utils/ProtectedRoute';
 import { BsPersonCircle } from "react-icons/bs";
 const NavBar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
 
     const toggleProfileMenu = () => {
         setProfileMenuOpen(!profileMenuOpen);
@@ -42,7 +42,7 @@ const NavBar = () => {
                         <Link to="/" className="block mx-4 mt-4 text-gray-700 capitalize lg:mt-0 hover:text-[#6d23b6]">Home</Link>
                         <Link to="/events" className="block mx-4 text-gray-700 capitalize hover:text-[#6d23b6]">Events</Link>
                         <a href="#" className="block mx-4 mt-4 text-gray-700 capitalize lg:mt-0 hover:text-[#6d23b6]">Contact</a>
-                        {token ? (
+                        {isAuthenticated() ? (
                             <div className="relative">
                                 <button onClick={toggleProfileMenu} className="block mx-4 mt-4 text-gray-700 capitalize lg:mt-0 hover:text-[#6d23b6] focus:outline-none">
                                     <BsPersonCircle className="w-6 h-6" />
