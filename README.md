@@ -11,7 +11,7 @@ A web application for managing events organized by company, enabling users to br
 4. Navigate to the backend directory `cd event-platform-pi`
 5. Install depencies: `npm install`
 6. Set up environment variable: Create `.env` file add variable referred to the `.env.example`
-7. Configure `MONGODB` locally or remotely
+7. Configure `MONGO DB` locally or remotely
 8. Configure `Cloudinary`
 
 ### Run The Service
