@@ -61,7 +61,7 @@ const UpcomingEvents = () => {
             <div className="container px-6 py-10 mx-auto">
                 <div className="text-center">
                     <h1 className="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl">Upcoming Events</h1>
-                    <p className="max-w-lg mx-auto mt-4 text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure veritatis sint autem nesciunt, laudantium quia tempore delect</p>
+                    <p className="max-w-lg mx-auto mt-4 text-gray-500">Join us for an unforgettable experience! Discover new opportunities, connect with like-minded individuals, and explore innovative ideas. Don't miss out on this exciting event!</p>
                 </div>
 
                 {loading ? (
