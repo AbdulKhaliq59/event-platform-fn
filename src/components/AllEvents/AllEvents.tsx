@@ -112,8 +112,7 @@ const AllEvents = () => {
     const filteredEvents = events.filter(event =>
         (event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             event.location.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        event.ticketSlots > 0 &&
-        new Date(event.date) > new Date()
+        event.ticketSlots > 0
     );
 
 
