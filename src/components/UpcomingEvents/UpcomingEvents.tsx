@@ -33,10 +33,8 @@ const UpcomingEvents = () => {
             try {
                 const response = await axios.get(`${BACKEND_URL}/events`);
                 const allEvents: Event[] = response.data.events;
-                const today = new Date();
-                const upcomingEvents = allEvents.filter(event => new Date(event.date) >= today);
-                upcomingEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-                const limitedEvents = upcomingEvents.slice(0, 4);
+
+                const limitedEvents = allEvents.slice(0, 4);
                 setUpcomingEvents(limitedEvents);
                 setLoading(false);
             } catch (error) {
