@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,7 +11,7 @@ const Signup = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     // const [error, setError] = useState(null);
-
+    const navigate = useNavigate();
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
@@ -31,6 +31,7 @@ const Signup = () => {
                 password,
             });
             toast.success(response.data.message);
+            navigate("/signin")
         } catch (error: any) {
             toast.error(error.response.data.error);
         }
