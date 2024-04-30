@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import eventImage from '/images/event3.jpg';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Signin = () => {
@@ -43,7 +43,7 @@ const Signin = () => {
             window.location.href = '/';
             setIsLoggedIn(true);
         } catch (error: any) {
-            toast.error(error.response.data.Error);
+            toast.error(error.response.data.error);
         }
     };
 

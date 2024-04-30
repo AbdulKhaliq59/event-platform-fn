@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import eventImage from '/images/event1.jpg'
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface Event {
@@ -76,10 +76,12 @@ const AllEvents = () => {
     const handleBook = async () => {
         try {
             if (!selectedEvent) {
-                toast.error("No event selected")
+                toast.error("No event selected");
+                return;
             }
             if (!numberOfTickets || numberOfTickets <= 0) {
-                toast.error("Invalid number of tickets")
+                toast.error("Invalid number of tickets");
+                return;
             }
             const token = localStorage.getItem('token');
             if (!token) {
@@ -93,22 +95,25 @@ const AllEvents = () => {
                 }
             }
             const response: any = await axios.post(`${BACKEND_URL}/booking`, {
-                eventId: selectedEvent?._id,
+                eventId: selectedEvent._id,
                 numberOfTickets
             },
                 authHeader
             );
 
-
             if (response.data.success === true) {
-                toast.success("Ticket Booked Successfully")
-                setShowModal(false)
-            }
+                toast.success("Ticket Booked Successfully");
+                setShowModal(false);
 
+                // Fetch updated events data after booking
+                const updatedResponse = await axios.get(`${BACKEND_URL}/events`);
+                setEvents(updatedResponse.data.events);
+            }
         } catch (error: any) {
-            toast.error("Internal Server error")
+            toast.error("Internal Server error");
         }
     }
+
     const filteredEvents = events.filter(event =>
         (event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             event.location.toLowerCase().includes(searchTerm.toLowerCase())) &&
