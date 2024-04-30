@@ -53,12 +53,16 @@ const Ticket = () => {
             if (response.data.success) {
                 toast.success('Ticket canceled successfully')
                 setIsCancelOpen(false);
-                setCancelTicketID(ticketId); // Trigger refetch by updating cancelTicketId
+
+                // Fetch updated tickets data after cancellation
+                const updatedResponse = await axios.get(`${BACKEND_URL}/user/tickets`, authHeader);
+                setTickets(updatedResponse.data.tickets);
             }
         } catch (error: any) {
             toast.error(error.response.data.error)
         }
     };
+
 
     const formatDate = (dateString: any) => {
         const date = new Date(dateString);
